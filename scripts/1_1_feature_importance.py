@@ -8,17 +8,16 @@ from sklearn import inspection
 def FeatureImportance(X, y):    
     # Model    
     rkf = model_selection.RepeatedKFold(n_splits=5, n_repeats=5)
-    reg = ensemble.HistGradientBoostingRegressor(loss='poisson',
-                                        max_bins=100)
+    reg = ensemble.HistGradientBoostingRegressor(loss='poisson', max_bins=100)
     cv_res = model_selection.cross_validate(reg, X, y, cv=rkf, 
                                             scoring='r2',
-                                            n_jobs=32,
+                                            n_jobs=48,
                                             return_estimator=True)
     
     # Importance of features
     imp_df = np.empty((0,X.shape[1]))
     for idx, estimator in enumerate(cv_res['estimator']):
-        imp_res = inspection.permutation_importance(estimator, X, y, n_repeats=5, random_state=0, n_jobs=32)
+        imp_res = inspection.permutation_importance(estimator, X, y, n_repeats=5, random_state=0, n_jobs=48)
         imp_df = np.vstack([imp_df, imp_res.importances_mean])
 
     return([cv_res['test_score'].mean()] + np.mean(imp_df, axis=0).tolist())
@@ -37,8 +36,6 @@ print(data.shape)
 # Data formatting
 features = ['water_temp [°C]', 'ph [pH]', 'do_sat [saturation]', 'w_co2 [mATM]', 'conductivity [uS cm -1]',
             'turb [NTU]', 'lat_sp [DD]', 'ele_sp [m]', 'gl_sa [km2]', 'gl_cov [%]', 'chla [ug g-1]', 
-            'eps [ugC g-1]', 'ag [nmol g-1 h-1]', 'ap [nmol g-1 h-1]', 'bg [nmol g-1 h-1]', 'lap [nmol g-1 h-1]',
-            'nag [nmol g-1 h-1]', 'bp [ngC g-1 h-1]', 'respiration [mg 02 g-1 h-1]', 
             'n3_srp [ug l-1]', 'n4_nh4 [ug l-1]', 'n5_no3 [ug l-1]', 'n6_no2 [ug l-1]', 
             'bio10', 'bio11', 'bio12', 'bio13', 'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', 'bio1',
             'bio2', 'bio3', 'bio4', 'bio5', 'bio6', 'bio7', 'bio8', 'bio9', 'fcf', 'fgd', 'scd', 'swe', 'pr', 
@@ -63,4 +60,4 @@ for ASV in data.index:
     imp = FeatureImportance(X, y)
     imp_df.loc[imp_df.shape[0]] = [ASV] + imp
 
-imp_df.to_csv('Data/importance_features.csv',index=False)
+imp_df.to_csv('../data/feature_importance.csv',index=False)
