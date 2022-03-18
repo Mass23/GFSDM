@@ -89,9 +89,10 @@ def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):
 metadata = pd.read_csv('../data/139GL_meta_clim.csv')
 metadata['lat_sp [DD]'] = np.abs(metadata['lat_sp [DD]'])
 
-features = ['lat_sp [DD]', 'ele_sp [m]', 'gl_sa [km2]', 'gl_cov [%]','bio10', 'bio11', 'bio12', 'bio13', 'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', 'bio1',
-             'bio2', 'bio3', 'bio4', 'bio5', 'bio6', 'bio7', 'bio8', 'bio9', 'fcf', 'fgd', 'scd', 'swe', 'pr', 
-             'tas', 'tasmin', 'tasmax']
+features = ['lat_sp [DD]', 'ele_sp [m]', 'gl_sa [km2]', 'gl_cov [%]','bio10', 'bio11', 'bio12', 'bio13', 
+            'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', 'bio1',
+            'bio2', 'bio3', 'bio4', 'bio5', 'bio6', 'bio7', 'bio8', 'bio9', 'fcf', 'fgd', 'scd', 'swe', 'pr', 
+            'tas', 'tasmin', 'tasmax','gl_a [km2]','sn_sp_dist [m]']
 X = metadata[features]
 spatial = metadata['gl_name'].values
 

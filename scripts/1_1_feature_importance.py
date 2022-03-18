@@ -18,6 +18,7 @@ def FeatureImportance(X, y, spatial):
                                             n_jobs=48,
                                             return_estimator=True)
     
+    print(f'r2: {cv_res['test_score'].mean()}')
     # Importance of features
     imp_df = np.empty((0,X.shape[1]))
     for idx, estimator in enumerate(cv_res['estimator']):
@@ -43,7 +44,7 @@ features = ['water_temp [°C]', 'ph [pH]', 'do_sat [saturation]', 'w_co2 [mATM]'
             'n3_srp [ug l-1]', 'n4_nh4 [ug l-1]', 'n5_no3 [ug l-1]', 'n6_no2 [ug l-1]', 
             'bio10', 'bio11', 'bio12', 'bio13', 'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', 'bio1',
             'bio2', 'bio3', 'bio4', 'bio5', 'bio6', 'bio7', 'bio8', 'bio9', 'fcf', 'fgd', 'scd', 'swe', 'pr', 
-            'tas', 'tasmin', 'tasmax']
+            'tas', 'tasmin', 'tasmax','gl_a [km2]','sn_sp_dist [m]']
 
 X = metadata[features]
 exps = pd.get_dummies(metadata.Expedition, prefix='exp')
