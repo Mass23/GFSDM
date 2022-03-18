@@ -5,11 +5,15 @@ from sklearn import ensemble
 from sklearn import model_selection
 from sklearn import inspection
 
-def FeatureImportance(X, y):    
+def FeatureImportance(X, y, spatial):    
     # Model    
-    rkf = model_selection.RepeatedKFold(n_splits=5, n_repeats=5)
+    group_kfold = model_selection.GroupKFold(n_splits=5)
+    spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
+    train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
+    spatial_cv = [*zip(train_indices,test_indices)]
+    
     reg = ensemble.HistGradientBoostingRegressor(loss='poisson', max_bins=100)
-    cv_res = model_selection.cross_validate(reg, X, y, cv=rkf, 
+    cv_res = model_selection.cross_validate(spatial_cv, X, y, cv=rkf, 
                                             scoring='r2',
                                             n_jobs=48,
                                             return_estimator=True)
@@ -57,7 +61,7 @@ for ASV in data.index:
     print(count, end='\r')
     y = metadata.patch.map(lambda x: data.loc[ASV, data.columns == x].mean(axis=0))
     
-    imp = FeatureImportance(X, y)
+    imp = FeatureImportance(X, y, metadata['gl_name'].values)
     imp_df.loc[imp_df.shape[0]] = [ASV] + imp
 
 imp_df.to_csv('../data/feature_importance.csv',index=False)
