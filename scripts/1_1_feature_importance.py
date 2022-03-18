@@ -7,7 +7,7 @@ from sklearn import inspection
 
 def FeatureImportance(X, y, spatial):    
     # Model    
-    group_kfold = model_selection.GroupKFold(n_splits=5)
+    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, random_state=0)
     spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
     train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
