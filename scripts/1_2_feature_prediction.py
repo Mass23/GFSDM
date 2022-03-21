@@ -10,7 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn import model_selection
 
 def GetImportance(X, y, spatial):
-    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, random_state=0)
+    group_kfold = model_selection.GroupShuffleSplit(n_splits=5, test_size = 0.25, random_state=0)
     spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
     train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
@@ -36,10 +36,11 @@ def RemoveCorrelations(X, importances):
     
     feats_to_remove = []
     for feature in features:
-        other_features = [feat for feat in features if feat not in [feature] + feats_to_remove]
-        for other_feature in other_features:
-            if np.abs(corrs.loc[feature, other_feature]) >= 0.7:
-                feats_to_remove.append(other_feature)
+        if feature not in feats_to_remove:
+            other_features = [feat for feat in features if feat not in [feature] + feats_to_remove]
+            for other_feature in other_features:
+                if np.abs(corrs.loc[feature, other_feature]) >= 0.7:
+                    feats_to_remove.append(other_feature)
     features = [feat for feat in features if feat not in feats_to_remove]
     return(features)
 
@@ -63,7 +64,7 @@ def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):
     print(final_features)
     final_X = X[final_features]
     
-    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, random_state=0)
+    group_kfold = model_selection.GroupShuffleSplit(n_splits=5, test_size = 0.25, random_state=0)
     spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
     train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
