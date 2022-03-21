@@ -7,13 +7,7 @@ from sklearn import inspection
 
 def FeatureImportance(X, y, spatial):    
     # Model    
-<<<<<<< HEAD
     group_kfold = model_selection.GroupShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
-=======
-    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, random_state=0)
->>>>>>> a7ce861566009cb1c0bdb7c8b93a748cbc233063
-    spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
-    train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
     
     reg = ensemble.HistGradientBoostingRegressor(loss='poisson', max_bins=100)
