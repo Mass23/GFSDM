@@ -24,7 +24,7 @@ def FeatureImportance(X, y, spatial):
         imp_res = inspection.permutation_importance(estimator, X, y, n_repeats=5, random_state=0, n_jobs=48)
         imp_df = np.vstack([imp_df, imp_res.importances_mean])
 
-    return([cv_res['test_score'].mean()] + np.mean(imp_df, axis=0).tolist())
+    return([cv_res['test_r2'].mean()] + np.mean(imp_df, axis=0).tolist())
 
 # Data loading
 metadata = pd.read_csv('../data/139GL_meta_clim.csv')
