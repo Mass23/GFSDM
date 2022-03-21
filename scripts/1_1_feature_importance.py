@@ -11,7 +11,7 @@ def FeatureImportance(X, y, spatial):
     train_indices, test_indices = [list(traintest) for traintest in zip(*group_kfold)]    
     spatial_cv = [*zip(train_indices,test_indices)]
     
-    reg = ensemble.HistGradientBoostingRegressor(learning_rate=0.05,max_iter=500,l2_regularization=0.001, loss='poisson', max_bins=100)
+    reg = ensemble.HistGradientBoostingRegressor(learning_rate=0.05,max_iter=1000, loss='poisson', max_bins=100)
     cv_res = model_selection.cross_validate(reg, X, y, cv=spatial_cv, 
                                             scoring='r2',
                                             n_jobs=48,
@@ -59,7 +59,7 @@ count=0
 for ASV in data.index:
     count +=1
     print(count, end='\r')
-    y = metadata.patch.map(lambda x: data.loc[ASV, data.columns == x].mean(axis=0))
+    y = np.log(metadata.patch.map(lambda x: data.loc[ASV, data.columns == x].mean(axis=0)))
     
     imp = FeatureImportance(X, y, metadata['gl_name'].values)
     imp_df.loc[imp_df.shape[0]] = [ASV] + imp
