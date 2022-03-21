@@ -34,13 +34,13 @@ def RemoveCorrelations(X, importances):
     features = list(importances['feature'].tolist())
     corrs = X[features].corr()
     
+    feats_to_remove = []
     for feature in features:
-        feats_to_remove = []
-        other_features = [feat for feat in features if feat != feature]
+        other_features = [feat for feat in features if feat not in [feature] + feats_to_remove]
         for other_feature in other_features:
             if np.abs(corrs.loc[feature, other_feature]) >= 0.7:
                 feats_to_remove.append(other_feature)
-        features = [feat for feat in features if feat not in feats_to_remove]
+    features = [feat for feat in features if feat not in feats_to_remove]
     return(features)
 
 def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):    
