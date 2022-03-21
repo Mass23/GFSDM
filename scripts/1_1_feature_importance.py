@@ -11,13 +11,13 @@ def FeatureImportance(X, y, spatial):
     train_indices, test_indices = [list(traintest) for traintest in zip(*group_kfold)]    
     spatial_cv = [*zip(train_indices,test_indices)]
     
-    reg = ensemble.HistGradientBoostingRegressor(learning_rate=0.05,max_iter=1000, loss='poisson', max_bins=100)
+    reg = ensemble.HistGradientBoostingRegressor(learning_rate=0.01,max_iter=2000, loss='poisson', max_bins=100)
     cv_res = model_selection.cross_validate(reg, X, y, cv=spatial_cv, 
-                                            scoring='r2',
+                                            scoring=['r2','neg_mean_absolute_error','neg_mean_squared_error'],
                                             n_jobs=48,
                                             return_estimator=True)
     
-    print(f"r2: {cv_res['test_score'].mean()}")
+    print(f"r2: {cv_res['test_r2'].mean()}")
     # Importance of features
     imp_df = np.empty((0,X.shape[1]))
     for idx, estimator in enumerate(cv_res['estimator']):
