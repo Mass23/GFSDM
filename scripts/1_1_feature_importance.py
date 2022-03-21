@@ -59,7 +59,7 @@ count=0
 for ASV in data.index:
     count +=1
     print(count, end='\r')
-    y = np.log(metadata.patch.map(lambda x: data.loc[ASV, data.columns == x].mean(axis=0)))
+    y = np.log(metadata.patch.map(lambda x: data.loc[ASV, data.columns == x].mean(axis=0)) + 1)
     
     imp = FeatureImportance(X, y, metadata['gl_name'].values)
     imp_df.loc[imp_df.shape[0]] = [ASV] + imp
