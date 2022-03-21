@@ -51,7 +51,7 @@ def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):
     y = y[~to_remove]
     spatial = spatial[~to_remove]
 
-    print('Computing features importance...')
+    print('  - Computing features importance...')
     imp_means = GetImportance(X, y, spatial)
     importances = np.array([(feature_names[i], value) for i, value in enumerate(imp_means)])
     
@@ -59,7 +59,7 @@ def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):
     importances = np.sort(importances, order=['importance'])[::-1]
     print(importances)
 
-    print('Removing correlated features with low predictive power...')
+    print('  - Removing correlated features with low predictive power...')
     final_features = RemoveCorrelations(X, importances)
     print(final_features)
     final_X = X[final_features]
@@ -72,13 +72,13 @@ def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):
     reg = HistGradientBoostingRegressor()
     pipe = Pipeline([('scaler', StandardScaler()), ('reg', reg)])
 
-    print('Searching best parameters in grid search ...')
+    print('  - Searching best parameters in grid search ...')
     gs_cv = GridSearchCV(pipe, cv=spatial_cv, param_grid=parameters, n_jobs=n_cores,error_score='raise')
     gs_cv.fit(X,y)
 
     print(gs_cv.best_estimator_)
 
-    print('Computing r2 ...')
+    print('  - Computing scores ...')
     cv_res = model_selection.cross_validate(pipe, X, y, cv=spatial_cv, n_jobs=n_cores,
                                             scoring=['r2','neg_mean_absolute_error','neg_mean_squared_error'],
                                             return_estimator=True)
@@ -104,5 +104,6 @@ parameters = {'reg__learning_rate': np.logspace(0.0001,0.5,10),
 
 for to_pred in ['ph [pH]', 'do_sat [saturation]', 'w_co2 [mATM]', 'conductivity [uS cm -1]', 'turb [NTU]',  'chla [ug g-1]', 
                 'n3_srp [ug l-1]', 'n4_nh4 [ug l-1]', 'n5_no3 [ug l-1]', 'n6_no2 [ug l-1]']:
+    print(to_pred)
     y = metadata[to_pred]
     FeaturePrediction(X, y, spatial, features, parameters, 48)
