@@ -125,6 +125,7 @@ for ASV in data.index:
         imp_df = np.vstack([imp_df, imp_res.importances_mean])
     final_importances = imp_df.mean(axis=0)
 
+    final_models = pd.read_csv('../final_models.csv')
     final_models = pd.concat([final_models, pd.DataFrame({'ASV':ASV, 
                                                           'best_model':str(gs_cv.best_estimator_),
                                                           'r2':cv_res['test_r2'].mean(), 
@@ -132,5 +133,4 @@ for ASV in data.index:
                                                           'neg_squared_err':cv_res['test_neg_mean_squared_error'].mean(), 
                                                           'features':str(final_features), 
                                                           'features_importance': str(final_importances)})], index=[ASV])  
-
-final_models.to_csv('../final_models.csv')
+    final_models.to_csv('../final_models.csv')
