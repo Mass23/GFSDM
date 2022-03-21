@@ -10,7 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn import model_selection
 
 def GetImportance(X, y, spatial):
-    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
+    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, random_state=0)
     spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
     train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
@@ -56,13 +56,14 @@ def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):
     
     importances = np.array([(feature, imp_means[i]) for i, feature in enumerate(features)], dtype = [('feature', '<U15'), ('importance', np.float64)])
     importances = np.sort(importances, order=['importance'])[::-1]
+    print(importances)
 
     print('Removing correlated features with low predictive power...')
     final_features = RemoveCorrelations(X, importances)
     print(final_features)
     final_X = X[final_features]
     
-    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
+    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, random_state=0)
     spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
     train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
@@ -88,9 +89,10 @@ def FeaturePrediction(X, y, spatial, feature_names, parameters, n_cores):
 metadata = pd.read_csv('../data/139GL_meta_clim.csv')
 metadata['lat_sp [DD]'] = np.abs(metadata['lat_sp [DD]'])
 
-features = ['lat_sp [DD]', 'ele_sp [m]', 'gl_sa [km2]', 'gl_cov [%]','bio10', 'bio11', 'bio12', 'bio13', 'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', 'bio1',
-             'bio2', 'bio3', 'bio4', 'bio5', 'bio6', 'bio7', 'bio8', 'bio9', 'fcf', 'fgd', 'scd', 'swe', 'pr', 
-             'tas', 'tasmin', 'tasmax']
+features = ['lat_sp [DD]', 'ele_sp [m]', 'gl_sa [km2]', 'gl_cov [%]','bio10', 'bio11', 'bio12', 'bio13', 
+            'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', 'bio1',
+            'bio2', 'bio3', 'bio4', 'bio5', 'bio6', 'bio7', 'bio8', 'bio9', 'fcf', 'fgd', 'scd', 'swe', 'pr', 
+            'tas', 'tasmin', 'tasmax','gl_a [km2]','sn_sp_dist [m]']
 X = metadata[features]
 spatial = metadata['gl_name'].values
 

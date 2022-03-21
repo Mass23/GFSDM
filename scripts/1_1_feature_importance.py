@@ -7,7 +7,11 @@ from sklearn import inspection
 
 def FeatureImportance(X, y, spatial):    
     # Model    
+<<<<<<< HEAD
     group_kfold = model_selection.GroupShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
+=======
+    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, random_state=0)
+>>>>>>> a7ce861566009cb1c0bdb7c8b93a748cbc233063
     spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
     train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
@@ -18,6 +22,7 @@ def FeatureImportance(X, y, spatial):
                                             n_jobs=48,
                                             return_estimator=True)
     
+    print(f'r2: {cv_res['test_score'].mean()}')
     # Importance of features
     imp_df = np.empty((0,X.shape[1]))
     for idx, estimator in enumerate(cv_res['estimator']):
@@ -43,7 +48,7 @@ features = ['water_temp [°C]', 'ph [pH]', 'do_sat [saturation]', 'w_co2 [mATM]'
             'n3_srp [ug l-1]', 'n4_nh4 [ug l-1]', 'n5_no3 [ug l-1]', 'n6_no2 [ug l-1]', 
             'bio10', 'bio11', 'bio12', 'bio13', 'bio14', 'bio15', 'bio16', 'bio17', 'bio18', 'bio19', 'bio1',
             'bio2', 'bio3', 'bio4', 'bio5', 'bio6', 'bio7', 'bio8', 'bio9', 'fcf', 'fgd', 'scd', 'swe', 'pr', 
-            'tas', 'tasmin', 'tasmax']
+            'tas', 'tasmin', 'tasmax','gl_a [km2]','sn_sp_dist [m]']
 
 X = metadata[features]
 exps = pd.get_dummies(metadata.Expedition, prefix='exp')
