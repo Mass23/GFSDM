@@ -20,11 +20,11 @@ def GetImportance(X, y, spatial):
 
     cv_res = model_selection.cross_validate(pipe, X, y, cv=spatial_cv, 
                                             scoring=['r2','neg_mean_absolute_error','neg_mean_squared_error'],
-                                            return_estimator=True, n_jobs=8)
+                                            return_estimator=True, n_jobs=48)
 
     imp_df = np.empty((0,X.shape[1]))
     for idx, estimator in enumerate(cv_res['estimator']):
-        imp_res = permutation_importance(estimator, X, y, n_repeats=1, random_state=0, n_jobs=8)
+        imp_res = permutation_importance(estimator, X, y, n_repeats=1, random_state=0, n_jobs=48)
         imp_df = np.vstack([imp_df, imp_res.importances_mean])
     imp_means = imp_df.mean(axis=0)
     return(imp_means)
@@ -75,8 +75,8 @@ print(len(features))
 spatial = metadata['gl_name'].values
 
 parameters = {'reg__learning_rate': np.logspace(0.0001,0.5,10),
-              'reg__l2_regularization': np.logspace(0.0001,10,20),
-              'reg__max_iter': np.linspace(100,2000,10).astype(int),
+              'reg__l2_regularization': np.logspace(0.0001,10,10),
+              'reg__max_iter': np.linspace(200,2000,10).astype(int),
               'reg__max_bins': [50,100,150,200]}
 
 n_cores=7
@@ -121,7 +121,7 @@ for ASV in data.index:
 
     imp_df = np.empty((0,X.shape[1]))
     for idx, estimator in enumerate(cv_res['estimator']):
-        imp_res = permutation_importance(estimator, X, y, n_repeats=1, random_state=0, n_jobs=8)
+        imp_res = permutation_importance(estimator, X, y, n_repeats=1, random_state=0, n_jobs=48)
         imp_df = np.vstack([imp_df, imp_res.importances_mean])
     final_importances = imp_df.mean(axis=0)
 
