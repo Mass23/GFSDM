@@ -9,7 +9,7 @@ def FeatureImportance(X, y, spatial):
     group_kfold = model_selection.GroupShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
     group_kfold = group_kfold.split(X, y, spatial)
     train_indices, test_indices = [list(traintest) for traintest in zip(*group_kfold)]    
-    spaial_cv = [*zip(train_indices,test_indices)]
+    spatial_cv = [*zip(train_indices,test_indices)]
     
     reg = ensemble.HistGradientBoostingRegressor(loss='poisson', max_bins=100)
     cv_res = model_selection.cross_validate(reg, X, y, cv=spatial_cv, 
