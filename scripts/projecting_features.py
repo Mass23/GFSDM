@@ -98,7 +98,7 @@ X = metadata[features]
 spatial = metadata['gl_name'].values
 
 parameters = {'reg__learning_rate': np.logspace(0.0001,0.5,10),
-              'reg__l2_regularization': np.logspace(0.0001,10,20),
+              'reg__l2_regularization': np.logspace(0.0001,10,10),
               'reg__max_iter': np.linspace(100,2000,10).astype(int),
               'reg__max_bins': [50,100,150,200]}
 
