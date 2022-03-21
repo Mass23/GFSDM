@@ -7,13 +7,13 @@ from sklearn import inspection
 
 def FeatureImportance(X, y, spatial):    
     # Model    
-    group_kfold = model_selection.GroupKFold(n_splits=5)
+    group_kfold = model_selection.GroupShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
     spatial_kfold = group_kfold.split(X, y, spatial)  # Create a nested list of train and test indices for each fold
     train_indices, test_indices = [list(traintest) for traintest in zip(*spatial_kfold)]
     spatial_cv = [*zip(train_indices,test_indices)]
     
     reg = ensemble.HistGradientBoostingRegressor(loss='poisson', max_bins=100)
-    cv_res = model_selection.cross_validate(spatial_cv, X, y, cv=rkf, 
+    cv_res = model_selection.cross_validate(reg, X, y, cv=spatial_cv, 
                                             scoring='r2',
                                             n_jobs=48,
                                             return_estimator=True)
@@ -27,7 +27,7 @@ def FeatureImportance(X, y, spatial):
     return([cv_res['test_score'].mean()] + np.mean(imp_df, axis=0).tolist())
 
 # Data loading
-metadata = pd.read_csv('../data/102GL_meta_clim.csv')
+metadata = pd.read_csv('../data/139GL_meta_clim.csv')
 metadata = metadata[~np.isnan(metadata['sba [cells g-1]'])]
 
 data = pd.read_csv('../data/NOMIS_16S_table_0122_filtered.csv')
