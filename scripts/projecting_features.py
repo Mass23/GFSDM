@@ -97,10 +97,10 @@ features = ['lat_sp [DD]', 'ele_sp [m]', 'gl_sa [km2]', 'gl_cov [%]','bio10', 'b
 X = metadata[features]
 spatial = metadata['gl_name'].values
 
-parameters = {'reg__learning_rate': np.logspace(0.0001,0.5,10),
-              'reg__l2_regularization': np.logspace(0.0001,10,10),
-              'reg__max_iter': np.linspace(100,2000,10).astype(int),
-              'reg__max_bins': [50,100,150,200]}
+parameters = {'reg__learning_rate': np.logspace(0.0001,0.5,8),
+              'reg__l2_regularization': np.logspace(0.0001,10,8),
+              'reg__max_iter': np.linspace(100,2000,8).astype(int),
+              'reg__max_bins': [50,100,150]}
 
 for to_pred in ['ph [pH]', 'do_sat [saturation]', 'w_co2 [mATM]', 'conductivity [uS cm -1]', 'turb [NTU]',  'chla [ug g-1]', 
                 'n3_srp [ug l-1]', 'n4_nh4 [ug l-1]', 'n5_no3 [ug l-1]', 'n6_no2 [ug l-1]']:
