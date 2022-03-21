@@ -16,7 +16,7 @@ def FeatureImportance(X, y, spatial):
                                             n_jobs=48,
                                             return_estimator=True)
     
-    print(f'r2: {cv_res['test_score'].mean()}')
+    print(f"r2: {cv_res['test_score'].mean()}")
     # Importance of features
     imp_df = np.empty((0,X.shape[1]))
     for idx, estimator in enumerate(cv_res['estimator']):
